@@ -8,4 +8,9 @@
 
 .system {
     color: #999;
+    display: block;
+}
+
+.message {
+    display: block;
 }
