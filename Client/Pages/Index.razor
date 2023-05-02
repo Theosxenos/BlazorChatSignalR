@@ -17,9 +17,22 @@
 }
 else
 {
-    <textarea style="width:100%; height:500px;" @ref="TextAreaRef">
-        @messages
-    </textarea>
+    <div style="width:100%; height:500px;" @ref="TextAreaRef">
+        @foreach(var msg in messages)
+        {
+            // System message
+            @if(string.IsNullOrEmpty(msg.Item1))
+            {
+                <span class="system">@msg.Item2</span>
+            }
+            else
+            {
+                <span class="message">
+                    <span class="user">@msg.Item1</span>@msg.Item2
+                </span>
+            }
+        }
+    </div>
     <div class="input-group">
         <input @bind-value="message" @bind-value:event="oninput" @onkeyup="HandleInput" class="form-control"/>
         <button class="btn btn-primary form-group-append" @onclick="Send" disabled="@(!IsConnected)">Send</button>
@@ -29,7 +42,7 @@ else
 
 @code {
     private HubConnection? hubConnection;
-    private string messages = string.Empty;
+    private List<(string, string)> messages = new();
     private string username = string.Empty;
     private string message = string.Empty;
     private ElementReference TextAreaRef;
@@ -42,8 +55,8 @@ else
 
         hubConnection.On<string, string>("GetThatMessageDude", (user,message) =>
         {
-            var msg = $"{(string.IsNullOrEmpty(user) ? "" : user + ": ")}{message}";
-            messages += msg + "\n";
+            var msg = $"{(string.IsNullOrEmpty(user) ? "" : ": ")}{message}";
+            messages.Add((user, msg));
             JSRuntime.InvokeVoidAsync("scrollToBottom", TextAreaRef);
             StateHasChanged();
         });
