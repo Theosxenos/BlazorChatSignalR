@@ -12,7 +12,8 @@
     <link href="BlazorChatSignalR.Client.styles.css" rel="stylesheet" />
     <script type="text/javascript">
         function scrollToBottom(textarea) {
-            textarea.scrollTop = textarea.scrollHeight;
+            //textarea.scrollTop = textarea.scrollHeight;
+            textarea.lastChild.scrollIntoView(false);
         }
     </script>
 </head>
